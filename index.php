@@ -29,6 +29,9 @@ class VkApi
             $result = array_merge($result, $api->getWallPostsAmount(-$group)['response']['items']);
         }
 
+
+        
+
         $by = 'date';
         usort($result, function ($first, $second) use ($by) {
             if ($first[$by] < $second[$by]) {
@@ -39,20 +42,29 @@ class VkApi
             return 0;
         });
 
-        return $result;
+
+
+
+        $result_pars = [];
+
+        foreach ($result as $value) {
+		    if (date('d-m-Y', $value['date']) == date('d-m-Y') && preg_match(file_get_contents("key.txt"), strtolower($value['text']))) {
+
+		    	$result_pars[] = $value;
+		    }
+		}
+
+        return $result_pars;
     }
 
 }
 
-
-foreach (VkApi::getNewsToday() as $value) {
-    if (date('d-m-Y', $value['date']) == date('d-m-Y') && preg_match(file_get_contents("key.txt"), strtolower($value['text']))) {
-        echo date('d-m-Y H:i:s', $value['date']);
-        echo "<br/>";
-        echo $value['text'];
-        echo "<br/><br/>";
-    }
-}
+		foreach (VkApi::getNewsToday() as $value) {
+		        echo date('d-m-Y H:i:s', $value['date']);
+		        echo "<br/>";
+		        echo $value['text'];
+		        echo "<br/><br/>";
+		}
 
 
 echo '<script type="text/javascript">
